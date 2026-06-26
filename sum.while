@@ -1,0 +1,12 @@
+a = IN; // Input first summand
+b = IN; // Input second summand
+
+/* a times add 1 to b */
+WHILE a {
+    b = b + 1;
+    a = a + -1
+};
+
+sum = b + 0;
+OUT sum
+

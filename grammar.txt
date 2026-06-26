@@ -1,0 +1,14 @@
+Statement -> Sequence
+
+Sequence -> Single | Sequence ; Single
+
+Single ->
+    Id = Id + Num |
+    Id = IN |
+    WHILE Id { Statement } |
+    IF Id { Statement } ELSE { Statement } |
+    IF Id { Statement } |
+    OUT Id
+
+Id -> /[a-z\_][a-z0-9\_]*/
+Num -> /\-?[0-9]+/

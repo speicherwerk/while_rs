@@ -1,0 +1,64 @@
+use std::str::FromStr;
+use crate::ast::*;
+
+grammar;
+
+match {
+    r"\s*" => { },
+    r"//[^\n\r]*[\n\r]*" => { },
+    r"/\*[^*]*\*+(?:[^/*][^*]*\*+)*/" => { },
+    ";", "=", "+", "WHILE", "IF", "ELSE", "{", "}", "IN", "OUT",
+    r"\-?[0-9]+", r"[a-z\_][a-z0-9\_]*",
+}
+
+pub Statement: Box<Statement> = {
+    Sequence,
+};
+
+Sequence: Box<Statement> = {
+    Single,
+    <lhs:Sequence> ";" <rhs:Single> =>
+        Box::new(Statement::Sequence(lhs, rhs)),
+};
+
+Single: Box<Statement> = {
+    <lhs:Id> "=" <rhs:Id> "+" <delta:Num> =>
+        Box::new(Statement::Assignment {
+            assignee: lhs,
+            base: rhs,
+            delta,
+        }),
+    <Id> "=" "IN" => Box::new(Statement::In(<>)),
+    "WHILE" <head:Id> "{"
+        <body:Statement>
+    "}" =>
+        Box::new(Statement::While { head, body }),
+
+    "IF" <head:Id> "{"
+        <body:Statement>
+    "}" "ELSE" "{"
+        <else_body:Statement>
+    "}" =>
+        Box::new(Statement::IfElse {
+            head,
+            body,
+            else_body,
+        }),
+
+    "IF" <head:Id> "{"
+        <body:Statement>
+    "}" =>
+        Box::new(Statement::If {
+            head,
+            body,
+        }),
+    "OUT" <Id> => Box::new(Statement::Out(<>))
+};
+
+Id: String = {
+    r"[a-z\_][a-z0-9\_]*" => <>.to_owned()
+}
+
+Num: i32 = {
+    r"\-?[0-9]+" => i32::from_str(<>).unwrap()
+}
