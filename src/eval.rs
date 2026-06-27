@@ -55,7 +55,13 @@ impl Statement {
                 let mut input = String::new();
                 loop {
                     input.clear();
-                    stdin().read_line(&mut input);
+                    match stdin().read_line(&mut input) {
+                        Err(e) => {
+                            eprintln!("Error reading user input from stdin: {e}. Try again …");
+                            continue;
+                        }
+                        _ => {}
+                    }
                     match input.trim().parse::<i32>() {
                         Ok(i) => {
                             ctx.bindings.insert(id.clone(), i);
