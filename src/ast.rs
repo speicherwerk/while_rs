@@ -21,8 +21,8 @@ pub enum Statement {
     ///
     /// IF Id { Statement }
     If { head: String, body: Box<Statement> },
-    /// An if-else statement that evaluates the if-branches body if the head doesn't evaluate to
-    /// zero and the else-branches body otherwise.
+    /// An if-else statement that evaluates the if-branche's body if the head doesn't evaluate to
+    /// zero and the else-branche's body otherwise.
     ///
     /// IF Id { Statement } ELSE { Statement }
     IfElse {
