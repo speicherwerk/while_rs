@@ -5,12 +5,15 @@ use std::{
 
 use crate::ast::*;
 
+/// The context for evaluating a [Statement].
 #[derive(Clone, Debug, Default)]
 pub struct Context {
+    /// The bindings this context holds.
     pub bindings: HashMap<String, i32>,
 }
 
 impl Statement {
+    /// Evaluates this statements in the given context.
     pub fn eval(&self, ctx: &mut Context) {
         match self {
             Self::Assignment {

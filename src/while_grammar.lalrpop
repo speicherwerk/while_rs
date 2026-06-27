@@ -4,11 +4,13 @@ use crate::ast::*;
 grammar;
 
 match {
-    r"\s*" => { },
-    r"//[^\n\r]*[\n\r]*" => { },
-    r"/\*[^*]*\*+(?:[^/*][^*]*\*+)*/" => { },
-    ";", "=", "+", "WHILE", "IF", "ELSE", "{", "}", "IN", "OUT",
-    r"\-?[0-9]+", r"[a-z\_][a-z0-9\_]*",
+    r"\s*" => { },                              // Ignore whitespace
+    r"//[^\n\r]*[\n\r]*" => { },                // C-style line comments
+    r"/\*[^*]*\*+(?:[^/*][^*]*\*+)*/" => { },   // C-style block comments
+    ";", "=", "+", "{", "}",                    // All the needed symbol tokens
+    "WHILE", "IF", "ELSE", "IN", "OUT",         // All the needed keyword tokens
+    r"\-?[0-9]+",                               // Numbers tokens
+    r"[a-z\_][a-z0-9\_]*",                      // Identifier tokens
 }
 
 pub Statement: Box<Statement> = {
@@ -17,23 +19,30 @@ pub Statement: Box<Statement> = {
 
 Sequence: Box<Statement> = {
     Single,
+
     <lhs:Sequence> ";" <rhs:Single> =>
         Box::new(Statement::Sequence(lhs, rhs)),
 };
 
 Single: Box<Statement> = {
+    // Assignment
     <lhs:Id> "=" <rhs:Id> "+" <delta:Num> =>
         Box::new(Statement::Assignment {
             assignee: lhs,
             base: rhs,
             delta,
         }),
+
+    // User input
     <Id> "=" "IN" => Box::new(Statement::In(<>)),
+
+    // While loop
     "WHILE" <head:Id> "{"
         <body:Statement>
     "}" =>
         Box::new(Statement::While { head, body }),
 
+    // If-else statement
     "IF" <head:Id> "{"
         <body:Statement>
     "}" "ELSE" "{"
@@ -45,6 +54,7 @@ Single: Box<Statement> = {
             else_body,
         }),
 
+    // If statement
     "IF" <head:Id> "{"
         <body:Statement>
     "}" =>
@@ -52,6 +62,8 @@ Single: Box<Statement> = {
             head,
             body,
         }),
+
+    // User output
     "OUT" <Id> => Box::new(Statement::Out(<>))
 };
 

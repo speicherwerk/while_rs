@@ -17,6 +17,6 @@ fn main() {
             let mut ctx = Context::default();
             ast.eval(&mut ctx);
         }
-        Err(e) => println!("{e}"),
+        Err(e) => println!("Error: {e}"),
     }
 }
