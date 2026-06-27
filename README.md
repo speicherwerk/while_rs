@@ -12,9 +12,10 @@ ausgeführt werden mit `cargo r sum.while`.
 # Umsetzung
 
 Als Parsergenerator wurde [`lalrpop`](https://github.com/lalrpop/lalrpop)
-benutzt, welches `LR(1)`-Parser generiert. Der einzige Input für den Generator
-ist die Grammatikdatei `src/while_grammar.lalrpop` und die AST-Definitionen in
-`src/ast.rs`. Entsprechend ist die Grammatik und der generierte Parser `LR(1)`
+benutzt, welches `LR(1)`-Parser generiert. Entsprechend ist die Grammatik und
+der generierte Parser `LR(1)`.Der einzige Input für den Generator ist die
+Grammatikdatei `src/while_grammar.lalrpop` und die AST-Definitionen in
+`src/ast.rs`. 
 
 Das Dangling-Else-Problem stellte sich wegen der obligatorischen geschweiften
 Klammern um den Körper der IF-Ausdrücke nicht. Nur die Assoziativität der
